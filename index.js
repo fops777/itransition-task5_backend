@@ -5,37 +5,67 @@ import cors from "cors";
 const app = express();
 
 app.use(cors());
+app.use(express.json());
 
-function genData() {
+function genData(sid) {
   let newUser;
+
+  faker.seed(sid);
+
   const id = faker.string.uuid();
   const fullName = faker.person.fullName();
   const number = faker.phone.number();
 
   const addressForms = [
-    `${faker.location.city()}, ${faker.location.street()}, дом: ${faker.location.buildingNumber()}`,
-    `${faker.location.city()}, ${faker.location.streetAddress()}`,
-    `${faker.location.city()}, ${faker.location.streetAddress(false)}`,
-    `${faker.location.city()}, ${faker.location.streetAddress(true)}`,
-    `${faker.location.city()}, ${faker.location.streetAddress({
-      useFullAddress: true,
-    })}`,
+    // `${(faker.seed(sid), faker.location.city())}, ${
+    //   (faker.seed(sid), faker.location.street())
+    // }, дом: ${(faker.seed(sid), faker.location.buildingNumber())}`,
+    // `${(faker.seed(sid), faker.location.city())}, ${
+    //   (faker.seed(sid), faker.location.streetAddress())
+    // }`,
+    // `${(faker.seed(sid), faker.location.city())}, ${
+    //   (faker.seed(sid), faker.location.streetAddress(false))
+    // }`,
+    // `${(faker.seed(sid), faker.location.city())}, ${
+    //   (faker.seed(sid), faker.location.streetAddress(true))
+    // }`,
+    `${(faker.seed(sid), faker.location.city())}, ${
+      (faker.seed(sid),
+      faker.location.streetAddress({
+        useFullAddress: true,
+      }))
+    }`,
   ];
   const randomIndex = Math.floor(Math.random() * addressForms.length);
   const randomFormAddres = addressForms[randomIndex];
 
   return (newUser = {
+    id,
     name: fullName,
     number,
-    id,
-    addres: randomFormAddres,
+    addres: randomFormAddres, // Надо разобраться с адресами
   });
 }
 
 app.get("/", (req, res) => {
   let usersArray = [];
+  let sid = 0; // теперь этот сид надо брать из req
+
   for (let i = 0; i < 20; i++) {
+    sid++;
     let newUser = genData();
+    usersArray.push(newUser);
+  }
+  res.json(usersArray); // 20 users
+});
+
+app.post("/seed", (req, res) => {
+  let usersArray = [];
+  let sid = req.body.seed;
+
+  for (let i = 0; i < 20; i++) {
+    sid++;
+    let newUser = genData(sid);
     usersArray.push(newUser);
   }
   res.json(usersArray); // 20 users
@@ -47,10 +77,3 @@ app.listen(5555, (error) => {
   }
   console.log("Server OK");
 });
-
-//Таблица выглядит следующим образом:
-// 1) Номер — без ошибок
-// 2) Случайный идентификатор — без ошибок
-// 3) ФИО
-// 4) Адрес (в нескольких вариантах форматов, не под копирку, например, где-то это область, город, улица, дом, корпус, квартира, а где-то село, улица и дом)
-// 5) Телефон (опять же, желательно в нескольких вариантах форматов)
