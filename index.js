@@ -17,18 +17,18 @@ function genData(sid) {
   const number = faker.phone.number();
 
   const addressForms = [
-    // `${(faker.seed(sid), faker.location.city())}, ${
-    //   (faker.seed(sid), faker.location.street())
-    // }, дом: ${(faker.seed(sid), faker.location.buildingNumber())}`,
-    // `${(faker.seed(sid), faker.location.city())}, ${
-    //   (faker.seed(sid), faker.location.streetAddress())
-    // }`,
-    // `${(faker.seed(sid), faker.location.city())}, ${
-    //   (faker.seed(sid), faker.location.streetAddress(false))
-    // }`,
-    // `${(faker.seed(sid), faker.location.city())}, ${
-    //   (faker.seed(sid), faker.location.streetAddress(true))
-    // }`,
+    `${(faker.seed(sid), faker.location.city())}, ${
+      (faker.seed(sid), faker.location.street())
+    }, дом: ${(faker.seed(sid), faker.location.buildingNumber())}`,
+    `${(faker.seed(sid), faker.location.city())}, ${
+      (faker.seed(sid), faker.location.streetAddress())
+    }`,
+    `${(faker.seed(sid), faker.location.city())}, ${
+      (faker.seed(sid), faker.location.streetAddress(false))
+    }`,
+    `${(faker.seed(sid), faker.location.city())}, ${
+      (faker.seed(sid), faker.location.streetAddress(true))
+    }`,
     `${(faker.seed(sid), faker.location.city())}, ${
       (faker.seed(sid),
       faker.location.streetAddress({
@@ -43,13 +43,13 @@ function genData(sid) {
     id,
     name: fullName,
     number,
-    addres: randomFormAddres, // Надо разобраться с адресами
+    addres: randomFormAddres,
   });
 }
 
 app.get("/", (req, res) => {
   let usersArray = [];
-  let sid = 0; // теперь этот сид надо брать из req
+  let sid = 0;
 
   for (let i = 0; i < 20; i++) {
     sid++;
